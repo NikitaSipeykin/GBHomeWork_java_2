@@ -12,6 +12,30 @@ public class Main {
 // прыжки. Если участник не смог пройти одно из препятствий, то дальше по списку он препятствий не идет.
 
     public static void main(String[] args) {
-	// write your code here
+        Activity[] objects = {
+            new Cat(),
+            new Robot(),
+            new Human()
+        };
+
+        Obstacle[] obstacles = {
+            new Track(),
+            new Wall()
+        };
+
+        obstacleCourse(objects, obstacles);
+    }
+
+    static void obstacleCourse(Activity[] object, Obstacle[] obstacles){
+
+        for (int i = 0; i < obstacles.length; i++) {
+            for (int j = 0; j < object.length; j++) {
+                if(object[j] != null){
+                    if (!obstacles[i].overcomingObstacles(object[j])){
+                        object[j]=null;
+                    }
+                }
+            }
+        }
     }
 }
