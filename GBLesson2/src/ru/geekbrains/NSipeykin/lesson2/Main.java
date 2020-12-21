@@ -60,8 +60,7 @@ public class Main {
         try {
             Integer.parseInt(arr);
         }catch (NumberFormatException e){
-            System.err.println("Exception was catch, in such an array cell ["+x+"]["+y+"]. For input string: \""+arr+"\"");
-            return true;
+            throw new MyArrayDataException(x,y,arr);
         }
         return false;
     }
@@ -73,7 +72,9 @@ public class Main {
         try {
             System.out.println(sumUpAllInArray(converter(arr1)));
         }catch (MyArraySizeException e){
-            System.err.println("MyArraySizeException was catch!");
+            System.err.println("MyArraySizeException was catch! For input string: \""+arr+"\"");
+        }catch (MyArrayDataException e){
+            System.err.println("MyArrayDataException was catch! For input string: \""+arr+"\"");
         }
    }
 }

@@ -5,9 +5,9 @@ public class MyArrayDataException extends NumberFormatException{
     public MyArrayDataException() {
     }
 
-    public MyArrayDataException(String s) {
+    public MyArrayDataException(int x, int y, String s) {
 
         super(s);
-        //return new MyArrayDataException("Exception was catch, in such an array cell ["+x+"]["+y+"]. For input string: \""+s+"\"");
+        System.err.println("Exception was catch, in such an array cell ["+x+"]["+y+"]. For input string: \""+s+"\"");
     }
 }
