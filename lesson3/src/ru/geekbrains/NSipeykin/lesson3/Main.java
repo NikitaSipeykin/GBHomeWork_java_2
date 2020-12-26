@@ -1,6 +1,7 @@
 package ru.geekbrains.NSipeykin.lesson3;
 
 import ru.geekbrains.NSipeykin.lesson3.task1.ImplementingTaskOne;
+import ru.geekbrains.NSipeykin.lesson3.task2.ImplementingTaskTwo;
 
 public class Main {
 
@@ -16,6 +17,6 @@ public class Main {
 
     public static void main(String[] args) {
         ImplementingTaskOne taskOne = new ImplementingTaskOne();
-
+        ImplementingTaskTwo taskTwo = new ImplementingTaskTwo();
     }
 }
