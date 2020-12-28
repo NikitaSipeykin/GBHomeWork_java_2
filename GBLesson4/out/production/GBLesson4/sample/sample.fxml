@@ -27,6 +27,7 @@
     </VBox>
 
     <Button text="Send" onAction="#sendText" defaultButton="true"
+
             AnchorPane.rightAnchor="16"
             AnchorPane.bottomAnchor="30"
     />
