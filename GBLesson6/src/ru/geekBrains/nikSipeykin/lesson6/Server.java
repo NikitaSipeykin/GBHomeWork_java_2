@@ -1,5 +1,7 @@
 package ru.geekBrains.nikSipeykin.lesson6;
+
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -22,6 +24,26 @@ public class Server {
     static final int PORT = 8189;
     
     public static void main(String[] args) {
+
+        Thread tread1 = new Thread(() ->{
+            Scanner consoleScanner = new Scanner(System.in);
+            try {
+                PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
+
+                while (true){
+                    String str = consoleScanner.nextLine();
+
+                    if(str.equals("/end")){
+                        break;
+                    }
+
+                    out.println("SERVER: " + str);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
         try {
             server = new ServerSocket(PORT);
             System.out.println("Server started");
@@ -29,6 +51,8 @@ public class Server {
             System.out.println("Client connected");
 
             Scanner scanner = new Scanner(socket.getInputStream());
+
+            tread1.start();
 
             while(true){
                 String str = scanner.nextLine();
