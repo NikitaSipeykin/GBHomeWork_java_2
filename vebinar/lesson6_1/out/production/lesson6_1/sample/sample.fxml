@@ -1,0 +1,15 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<VBox fx:controller="sample.Controller"
+      xmlns:fx="http://javafxml.com/fxml" alignment="center" >
+
+<TextArea fx:id="textArea" VBox.vgrow="ALWAYS" editable="false"/>
+
+<HBox>
+    <TextField fx:id="textField" HBox.hgrow="ALWAYS" promptText="input message"/>
+    <Button text="send"/>
+</HBox>
+</VBox>
