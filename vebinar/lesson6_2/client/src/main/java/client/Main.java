@@ -5,14 +5,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+                          //окно клиентского чата
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
-        primaryStage.setTitle("GeekChat");
-        primaryStage.setScene(new Scene(root, 400, 350));
+        Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));   //адресс fxml
+        primaryStage.setTitle("GeekChat");                                      //наименование окна
+        primaryStage.setScene(new Scene(root, 400, 350));    //размеры окна
         primaryStage.show();
     }
 

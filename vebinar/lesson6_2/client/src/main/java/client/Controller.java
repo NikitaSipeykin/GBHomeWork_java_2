@@ -14,25 +14,25 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
+                    // работает непосредственно с fxml окна клиентского чата
 public class Controller implements Initializable {
     @FXML
-    private TextArea textArea;
+    private TextArea textArea;  //эллемент fxml текстовое поле
     @FXML
-    private TextField textField;
+    private TextField textField;   //эллемент fxml поле ввода текста
 
     private Socket socket;
-    private DataInputStream in;
-    private DataOutputStream out;
-    private final String IP_ADDRESS = "localhost";
+    private DataInputStream in;   //байтовый поток ввода информации
+    private DataOutputStream out;  //байтовый поток вывода информации
+    private final String IP_ADDRESS = "localhost";   // айпишник
     private final int PORT = 8189;
 
     @FXML
-    public void sendMsg(ActionEvent actionEvent) {
+    public void sendMsg(ActionEvent actionEvent) {  //выступает после нажатия "отправки текста" из текстового поля
         try {
-            out.writeUTF(textField.getText());
-            textField.clear();
-            textField.requestFocus();
+            out.writeUTF(textField.getText());  // выводит текст из поля ввода текста в текстовое поле
+            textField.clear();   //очищает поле ввода текста
+            textField.requestFocus();    //переводит фокус на предыдущий эллемент(поле ввода текста)
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,20 +43,20 @@ public class Controller implements Initializable {
 
         try {
             socket = new Socket(IP_ADDRESS,PORT);
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());  //считывает информацию ввода
+            out = new DataOutputStream(socket.getOutputStream());    //считывает информацию вывода
 
             new Thread(()->{
                 try {
                     while(true){
-                        String str = in.readUTF();
+                        String str = in.readUTF();    //считывает  вводимою информацию
 
-                        if(str.equals("/end")){
+                        if(str.equals("/end")){    //команда отключения клиента от сервера
                             System.out.println("Client disconnected");
                             break;
                         }
 
-                        textArea.appendText("Client: " + str);
+                        textArea.appendText("Client: " + str + "\n");   //выводит текст в чат
                     }
 
                 } catch (IOException e) {
