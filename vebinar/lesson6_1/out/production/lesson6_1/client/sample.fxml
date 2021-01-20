@@ -3,13 +3,17 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<VBox fx:controller="sample.Controller"
+<?import java.net.URL?>
+<VBox fx:controller="client.Controller"
       xmlns:fx="http://javafxml.com/fxml" alignment="center" >
 
+    <stylesheets>
+        <URL value="@/css/style.css"/>
+    </stylesheets>
 <TextArea fx:id="textArea" VBox.vgrow="ALWAYS" editable="false"/>
 
 <HBox>
-    <TextField fx:id="textField" HBox.hgrow="ALWAYS" promptText="input message"/>
-    <Button text="send"/>
+    <TextField fx:id="textField" HBox.hgrow="ALWAYS" promptText="input message" onAction="#sendMsg"/>
+    <Button text="send" onAction="#sendMsg"/>
 </HBox>
 </VBox>
