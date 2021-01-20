@@ -6,9 +6,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+<VBox fx:controller="ru.geekBrains.nikSipeykin.lesson6.client.Controller"
+    xmlns:fx="http://javafxml.com/fxml" alignment="center" >
 
-</AnchorPane>
+    <TextArea fx:id="textArea" VBox.vgrow="ALWAYS" editable="false"/>
+
+    <HBox>
+        <TextField fx:id="textField" HBox.hgrow="ALWAYS" promptText="input message"/>
+        <Button text="send"/>
+    </HBox>
+</VBox>
