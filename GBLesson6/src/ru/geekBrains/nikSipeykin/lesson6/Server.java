@@ -1,7 +1,8 @@
 package ru.geekBrains.nikSipeykin.lesson6;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -18,63 +19,49 @@ public class Server {
 //    Разобраться с кодом с занятия, он является фундаментом проекта-чата
 //    ВАЖНО! Сервер общается только с одним клиентом, т.е. не нужно запускать цикл, который будет ожидать
 //    второго/третьего/n-го клиентов
-
-    static ServerSocket server;
-    static Socket socket;
     static final int PORT = 8189;
     
     public static void main(String[] args) {
+        Socket socket = null;
+        Scanner consoleScanner = new Scanner(System.in);
 
-        Thread tread1 = new Thread(() ->{
-            Scanner consoleScanner = new Scanner(System.in);
-            try {
-                PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-
-                while (true){
-                    String str = consoleScanner.nextLine();
-
-                    if(str.equals("/end")){
-                        break;
-                    }
-
-                    out.println("SERVER: " + str);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        try {
-            server = new ServerSocket(PORT);
+        try (ServerSocket server = new ServerSocket(PORT)){
             System.out.println("Server started");
             socket = server.accept();
-            System.out.println("Client connected");
+            System.out.println("Client connected" + socket.getRemoteSocketAddress());
+            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+            DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
 
-            Scanner scanner = new Scanner(socket.getInputStream());
+            //stream to read
+            Thread thread1 = new Thread(() ->{
 
-            tread1.start();
+                try {
+                    while (true){
+                        outputStream.writeUTF(consoleScanner.nextLine());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            thread1.setDaemon(true);
+            thread1.start();
 
             while(true){
-                String str = scanner.nextLine();
-
-                if(str.equals("/end")){
+                String str = inputStream.readUTF();
+                if (str.equals("/close")){
                     System.out.println("Client disconnected");
+                    outputStream.writeUTF("/close");
                     break;
+                }else {
+                    System.out.println("Client: " + str);
                 }
-
-                System.out.println("Client: " + str);
             }
-        } catch (IOException e) {
+        }catch (IOException e){
             e.printStackTrace();
         }finally {
             try {
                 socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                server.close();
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
             }
         }
