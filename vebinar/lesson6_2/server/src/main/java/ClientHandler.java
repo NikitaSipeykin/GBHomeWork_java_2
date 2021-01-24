@@ -51,13 +51,22 @@ public class ClientHandler {
                     while(true){
                         String str = in.readUTF();
 
-                        if(str.equals(Command.END)){   //команда отключения клиента от сервера
-                            sendMsg(Command.END);
-                            System.out.println("Client disconnected");
-                            break;   //выход из безконечного цикла
+                        if(str.startsWith("/")){
+                            if(str.equals(Command.END)){   //команда отключения клиента от сервера
+                                sendMsg(Command.END);
+                                System.out.println("Client disconnected");
+                                break;   //выход из безконечного цикла
+                            }
+                            if(str.startsWith(Command.PRV_MSG)){
+                                String[] token = str.split("\\s", 3);
+                                if (token.length < 3){
+                                    continue;
+                                }
+                                server.privateMsg(this, token[1],token[2]);
+                            }
+                        }else {
+                            server.broadcastMsg(this, str);
                         }
-
-                        server.broadcastMsg(this, str);
                     }
 
                 } catch (IOException e) {

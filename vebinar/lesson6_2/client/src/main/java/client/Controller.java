@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,18 +39,18 @@ public class Controller implements Initializable {
     private final String IP_ADDRESS = "localhost";   // айпишник
     private final int PORT = 8189;
 
-    private boolean authentincated;
+    private boolean authenticated;
     private String nickname;
 
     private Stage stage;
 
-    public void setAuthentincated(boolean authentincated) {
-        this.authentincated = authentincated;
-        msgPanel.setVisible(authentincated);
-        msgPanel.setManaged(authentincated);
-        authPanel.setVisible(!authentincated);
-        authPanel.setManaged(!authentincated);
-        if(!authentincated){
+    public void setAuthenticated(boolean authenticated) {
+        this.authenticated = authenticated;
+        msgPanel.setVisible(authenticated);
+        msgPanel.setManaged(authenticated);
+        authPanel.setVisible(!authenticated);
+        authPanel.setManaged(!authenticated);
+        if(!authenticated){
             nickname = "";
         }
         setTitle(nickname);
@@ -71,17 +70,14 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Platform.runLater(()->{  //fixme: решить проблему NullPointerException
+        Platform.runLater(() -> {
             stage = (Stage) textArea.getScene().getWindow();
         });
-        setAuthentincated(false);
+        setAuthenticated(false);
     }
 
     private void connect(){
         try {
-
-
-
             socket = new Socket(IP_ADDRESS,PORT);
             in = new DataInputStream(socket.getInputStream());  //считывает информацию ввода
             out = new DataOutputStream(socket.getOutputStream());    //считывает информацию вывода
@@ -95,7 +91,7 @@ public class Controller implements Initializable {
                         if (str.startsWith("/")){
                             if (str.startsWith(Command.AUTH_OK)){
                                 nickname = str.split("\\s")[1];
-                                setAuthentincated(true);
+                                setAuthenticated(true);
                                 break;
                             }
 
@@ -104,7 +100,7 @@ public class Controller implements Initializable {
                                 throw new RuntimeException("server disconnected us");
                             }
                         }else {
-                            textArea.appendText("Client: " + str + "\n");   //выводит текст в чат
+                            textArea.appendText(str + "\n");   //выводит текст в чат
                         }
                     }
 
@@ -117,13 +113,13 @@ public class Controller implements Initializable {
                             break;
                         }
 
-                        textArea.appendText("Client: " + str + "\n");   //выводит текст в чат
+                        textArea.appendText(str + "\n");   //выводит текст в чат
                     }
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }finally {
-                    setAuthentincated(false);
+                    setAuthenticated(false);
                     try {
                         socket.close();
                     } catch (IOException e) {
@@ -154,9 +150,9 @@ public class Controller implements Initializable {
 
     private void setTitle(String nickname){
         if(nickname.equals("")){
-
+            Platform.runLater(()->{
                 stage.setTitle("GeekChat");
-
+            });
         }else {
             Platform.runLater(()-> {
                 stage.setTitle(String.format("GeekChat [ %s ]", nickname));
