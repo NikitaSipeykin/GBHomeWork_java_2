@@ -71,7 +71,7 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Platform.runLater(()->{
+        Platform.runLater(()->{  //fixme: решить проблему NullPointerException
             stage = (Stage) textArea.getScene().getWindow();
         });
         setAuthentincated(false);
