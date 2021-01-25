@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:controller="ru.geekBrains.nikSipeykin.lesson6.client.Controller"
+    xmlns:fx="http://javafxml.com/fxml" alignment="center" >
+
+    <TextArea fx:id="textArea" VBox.vgrow="ALWAYS" editable="false"/>
+
+    <HBox>
+        <TextField fx:id="textField" HBox.hgrow="ALWAYS" promptText="input message"/>
+        <Button text="send"/>
+    </HBox>
+</VBox>
