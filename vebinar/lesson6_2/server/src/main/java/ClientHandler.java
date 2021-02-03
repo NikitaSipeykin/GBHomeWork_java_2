@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class ClientHandler {
     private Server server;
@@ -11,6 +12,7 @@ public class ClientHandler {
     private DataInputStream in;
     private DataOutputStream out;
     private String nickName;
+    private String login;
 
     //отвечает за работу конкретного клиента
     public ClientHandler(Server server, Socket socket) {
@@ -22,53 +24,77 @@ public class ClientHandler {
 
             new Thread(()->{
                 try {
+                    socket.setSoTimeout(120000);
                     //цикл аутентификации
-                    while(true){
+                    while (true) {
                         String str = in.readUTF();
 
-                        if (str.startsWith(Command.AUTH)){
+                        if (str.startsWith(Command.AUTH)) {
                             String[] token = str.split("\\s");
                             String newNick = server.getAuthService().getNicknameByLoginAndPassword(token[1], token[2]);
-                            if (newNick != null){
-                                nickName = newNick;
-                                sendMsg(Command.AUTH_OK+" " + nickName);
-                                server.subscribe(this);
-                                System.out.println("Client " + nickName+" connected " + socket.getRemoteSocketAddress());
-                                break;
-                            }else {
+                            login = token[1];
+                            if (newNick != null) {
+                                if (!server.isLoginAuthenticated(login)) {
+                                    nickName = newNick;
+                                    sendMsg(Command.AUTH_OK + " " + nickName);
+                                    server.subscribe(this);
+                                    System.out.println("Client " + nickName + " connected " + socket.getRemoteSocketAddress());
+                                    socket.setSoTimeout(0);
+                                    break;
+                                } else {
+                                    sendMsg("Этот логин уже используется");
+                                }
+
+                            } else {
                                 sendMsg("Неверный логин / пароль");
                             }
                         }
 
-                        if(str.equals(Command.END)){   //команда отключения клиента от сервера
+                        if (str.equals(Command.END)) {   //команда отключения клиента от сервера
                             sendMsg(Command.END);
-                            System.out.println("Client disconnected");
-                            break;   //выход из безконечного цикла
+                            throw new RuntimeException("Client disconnected");   //выход из безконечного цикла
+                        }
+
+                        if (str.startsWith(Command.REG)) {
+                            String[] tokens = str.split("\\s");
+                            if (tokens.length < 4) {
+                                continue;
+                            }
+                            boolean regCompleted = server.getAuthService().registration(tokens[1], tokens[2], tokens[3]);
+                            if (regCompleted) {
+                                sendMsg(Command.REG_OK);
+                            } else {
+                                sendMsg(Command.NO_REG);
+                            }
                         }
                     }
 
                     //цикл работы
-                    while(true){
+                    while (true) {
                         String str = in.readUTF();
 
-                        if(str.startsWith("/")){
-                            if(str.equals(Command.END)){   //команда отключения клиента от сервера
+                        if (str.startsWith("/")) {
+                            if (str.equals(Command.END)) {   //команда отключения клиента от сервера
                                 sendMsg(Command.END);
                                 System.out.println("Client disconnected");
                                 break;   //выход из безконечного цикла
                             }
-                            if(str.startsWith(Command.PRV_MSG)){
+                            if (str.startsWith(Command.PRV_MSG)) {
                                 String[] token = str.split("\\s", 3);
-                                if (token.length < 3){
+                                if (token.length < 3) {
                                     continue;
                                 }
-                                server.privateMsg(this, token[1],token[2]);
+                                server.privateMsg(this, token[1], token[2]);
                             }
-                        }else {
+                        } else {
                             server.broadcastMsg(this, str);
                         }
                     }
-
+                }catch (SocketTimeoutException e){
+                    sendMsg(Command.END);
+                    System.out.println(e.getMessage());
+                }catch (RuntimeException e){
+                    System.out.println(e.getMessage());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }finally {
@@ -96,5 +122,9 @@ public class ClientHandler {
 
     public String getNickName() {
         return nickName;
+    }
+
+    public String getLogin() {
+        return login;
     }
 }

@@ -1,3 +1,5 @@
+import commands.Command;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -60,13 +62,39 @@ public class Server {
 
     void subscribe(ClientHandler clientHandler){
         clients.add(clientHandler);
+        broadcastClientList();
     }
 
     void unSubscribe(ClientHandler clientHandler){
         clients.remove(clientHandler);
+        broadcastClientList();
     }
 
     public AuthService getAuthService() {
         return authService;
+    }
+
+    public boolean isLoginAuthenticated(String login){
+        for(ClientHandler c : clients){
+            if(c.getLogin().equals(login)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void broadcastClientList(){
+        StringBuilder sb = new StringBuilder(Command.CLIENT_LIST);
+        sb.append(" ");
+
+        for (ClientHandler c : clients){
+            sb.append(" ").append(c.getNickName());
+        }
+
+        String msg = sb.toString();
+
+        for (ClientHandler c : clients){
+            c.sendMsg(msg);
+        }
     }
 }
