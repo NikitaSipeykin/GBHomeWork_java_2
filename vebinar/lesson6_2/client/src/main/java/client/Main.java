@@ -1,5 +1,11 @@
 package client;
 
+// TODO:
+//        1. Добавить в сетевой чат авторизацию через базу данных SQLite.
+//        2.*Добавить в сетевой чат возможность смены ника.
+//        3.*Добавить в сетевой чат возможность регистрации.
+//        4.*****Добавить в сетевой чат сохранение истории чата
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
