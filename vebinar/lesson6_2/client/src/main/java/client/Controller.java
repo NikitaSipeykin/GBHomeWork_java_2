@@ -157,6 +157,11 @@ public class Controller implements Initializable {
                                     }
                                 });
                             }
+
+                            if (str.startsWith("/yournicks")){
+                                nickname = str.split(" ")[1];
+                                setTitle(nickname);
+                            }
                         }else {
                             textArea.appendText(str + "\n");   //выводит текст в чат
                         }
