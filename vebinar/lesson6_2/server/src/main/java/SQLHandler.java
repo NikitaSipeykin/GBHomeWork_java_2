@@ -9,13 +9,13 @@ public class SQLHandler {
     private static PreparedStatement psAddMessage;
     private static PreparedStatement psGetMessageForNick;
 
-    public static boolean connect(){
+    public static boolean connect() {
         try{
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:main.db");
             prepareAllStatements();
             return true;
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

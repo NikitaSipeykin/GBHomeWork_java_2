@@ -96,7 +96,6 @@ public class Server {
 
     public void broadcastClientList(){
         StringBuilder sb = new StringBuilder(Command.CLIENT_LIST);
-        sb.append(" ");
 
         for (ClientHandler c : clients){
             sb.append(" ").append(c.getNickName());
