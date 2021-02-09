@@ -40,6 +40,7 @@ public class ClientHandler {
                                     server.subscribe(this);
                                     System.out.println("Client " + nickName + " connected " + socket.getRemoteSocketAddress());
                                     socket.setSoTimeout(0);
+                                    sendMsg(SQLHandler.getMessageForNick(nickName));
                                     break;
                                 } else {
                                     sendMsg("Этот логин уже используется");
@@ -85,6 +86,25 @@ public class ClientHandler {
                                     continue;
                                 }
                                 server.privateMsg(this, token[1], token[2]);
+                            }
+
+                            if (str.startsWith("/chnick")){
+                                String[] token = str.split(" ", 2);
+                                if (token.length < 2){
+                                    continue;
+                                }
+                                if (token[1].contains(" ")){
+                                    sendMsg("Nickname cannot contain spaces");
+                                    continue;
+                                }
+                                if (server.getAuthService().changeNick(this.nickName, token[1])){
+                                    sendMsg("/yournickis " + token[1]);
+                                    sendMsg("Your nickname has been changed " + token[1]);
+                                    this.nickName = token[1];
+                                    server.broadcastClientList();
+                                }else {
+                                    sendMsg("Couldn't change nickname. Nickname " + token[1] + " already exists.");
+                                }
                             }
                         } else {
                             server.broadcastMsg(this, str);

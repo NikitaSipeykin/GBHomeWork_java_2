@@ -15,7 +15,12 @@ public class Server {
 
     public Server() {
         clients = new CopyOnWriteArrayList<>();
-        authService = new SimpleAuthService();
+//        authService = new SimpleAuthService();
+
+        if (!SQLHandler.connect()){
+            throw new RuntimeException("Failed to connect to the database");
+        }
+        authService = new DBAuthService();
 
         try {
             server = new ServerSocket(PORT);   //инициализация серверного сокета
@@ -31,6 +36,7 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
+            SQLHandler.disconnect();
             try {
                 server.close();   //закрывает серверный сокет
             } catch (IOException e) {
@@ -41,6 +47,9 @@ public class Server {
 
     public void broadcastMsg(ClientHandler clientHandler, String msg){
         String message = String.format("[ %s ]: %s", clientHandler.getNickName(), msg );
+
+        SQLHandler.addMessage(clientHandler.getNickName(), "null", msg, "once upon a time");
+
         for (ClientHandler c : clients){
             c.sendMsg(message);
         }
@@ -51,6 +60,8 @@ public class Server {
         for (ClientHandler c : clients){
             if (c.getNickName().equals(receiver)){
                 c.sendMsg(message);
+
+                SQLHandler.addMessage(sender.getNickName(), receiver, msg, "once upon a time");
                 if (!c.equals(sender)){
                     sender.sendMsg(message);
                 }
@@ -85,7 +96,6 @@ public class Server {
 
     public void broadcastClientList(){
         StringBuilder sb = new StringBuilder(Command.CLIENT_LIST);
-        sb.append(" ");
 
         for (ClientHandler c : clients){
             sb.append(" ").append(c.getNickName());
