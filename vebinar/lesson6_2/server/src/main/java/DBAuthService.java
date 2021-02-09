@@ -7,7 +7,7 @@ public class DBAuthService implements AuthService{
 
     @Override
     public boolean registration(String login, String password, String nickname) {
-        return SQLHandler.refistration(login, password, nickname);
+        return SQLHandler.registration(login, password, nickname);
     }
 
     @Override

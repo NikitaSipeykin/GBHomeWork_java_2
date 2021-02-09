@@ -26,15 +26,15 @@ public class SQLHandler {
         psRegistration = connection.prepareStatement("INSERT INTO clients(login, password, nickname) VALUES (?, ?, ?);");
         psChangeNick = connection.prepareStatement("UPDATE clients SET nickname = ? WHERE nickname = ?;");
 
-        psAddMessage = connection.prepareStatement("INSERT INTO messages (sender, receiver, text, date) VALUE (\n" +
+        psAddMessage = connection.prepareStatement("INSERT INTO messages (sender, receiver, text, date) VALUES (\n" +
                 "(SELECT id FROM clients WHERE nickname = ?),\n" +
                 "(SELECT id FROM clients WHERE nickname = ?),\n" + "?, ?)");
 
-        psGetMessageForNick = connection.prepareStatement("SELECT (SELECT nickname FROM clients WHERE id = sender), \n" +
-                "(SELECT nickname FROM clients WHERE id = receiver), \n" + "text,\n" + "date \n" + "FROM messages \n"+
+        psGetMessageForNick = connection.prepareStatement("SELECT (SELECT nickname FROM clients Where id = sender), \n" +
+                "(SELECT nickname FROM clients Where id = receiver), \n" + "text,\n" + "date \n" + "FROM messages \n"+
                 "WHERE sender = (SELECT id FROM clients WHERE nickname = ?)\n"+
                 "OR receiver = (SELECT id FROM clients WHERE nickname = ?)\n" +
-                "OR receiver = (SELECT id FROM clients WHERE nickname = 'null'");
+                "OR receiver = (SELECT id FROM clients WHERE nickname = 'null')");
     }
 
     public static String getNicknameByLoginAndPassword(String login, String password){
@@ -47,13 +47,13 @@ public class SQLHandler {
                 nick = rs.getString(1);
             }
             rs.close();
-        } catch (SQLException throwables) {
+        } catch (Exception throwables) {
             throwables.printStackTrace();
         }
         return nick;
     }
 
-    public static boolean refistration(String login, String password, String nickname){
+    public static boolean registration(String login, String password, String nickname){
         try{
             psRegistration.setString(1, login);
             psRegistration.setString(2, password);

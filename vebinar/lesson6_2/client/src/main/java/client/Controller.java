@@ -158,7 +158,7 @@ public class Controller implements Initializable {
                                 });
                             }
 
-                            if (str.startsWith("/yournicks")){
+                            if (str.startsWith(Command.YOUR_NICK)){
                                 nickname = str.split(" ")[1];
                                 setTitle(nickname);
                             }
