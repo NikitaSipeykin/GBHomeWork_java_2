@@ -40,7 +40,7 @@ public class ClientHandler {
                                     server.subscribe(this);
                                     System.out.println("Client " + nickName + " connected " + socket.getRemoteSocketAddress());
                                     socket.setSoTimeout(0);
-                                    sendMsg(SQLHandler.getMessageForNick(nickName));
+                                    //sendMsg(SQLHandler.getMessageForNick(nickName));
                                     break;
                                 } else {
                                     sendMsg("Этот логин уже используется");
